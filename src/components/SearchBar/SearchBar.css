@@ -1,0 +1,10 @@
+.header{
+    background-color: blue;
+    padding: 2px;
+}
+.form{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    justify-content: center;
+}
