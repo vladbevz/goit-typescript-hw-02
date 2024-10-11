@@ -2,6 +2,22 @@ import React, { useEffect } from 'react';
 import Modal from 'react-modal';
 import './ImageModal.css';
 
+interface ImageUrls {
+  regular: string;
+  small: string; 
+}
+
+interface Image {
+  urls: ImageUrls;
+  alt_description: string;
+}
+
+interface ImageModalProps {
+  image: Image | null;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
 const customStyles = {
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -24,21 +40,6 @@ const customStyles = {
 
 Modal.setAppElement('#root');
 
-
-interface Image {
-  urls: {
-    regular: string;
-  };
-  alt_description: string;
-}
-
-
-interface ImageModalProps {
-  image: Image | null; 
-  isOpen: boolean;
-  onClose: () => void;
-}
-
 export default function ImageModal({ image, isOpen, onClose }: ImageModalProps) {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -52,7 +53,7 @@ export default function ImageModal({ image, isOpen, onClose }: ImageModalProps) 
     };
   }, [onClose]);
 
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
@@ -66,7 +67,6 @@ export default function ImageModal({ image, isOpen, onClose }: ImageModalProps) 
       onRequestClose={onClose}
       style={customStyles}
       contentLabel="Image Modal"
-      onClick={handleOverlayClick}
     >
       <button className='btn' onClick={onClose}>Close</button>
       <img className='img' src={image.urls.regular} alt={image.alt_description} />

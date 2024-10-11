@@ -7,25 +7,26 @@ import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import ImageGallery from "../ImageGallery/ImageGallery";
 import ImageModal from "../ImageModal/ImageModal";
 
+interface ImageUrls {
+  small: string;
+  regular: string;
+}
 
 interface Image {
   id: string;
-  urls: {
-    small: string;
-    regular: string;
-  };
+  urls: ImageUrls;
   alt_description: string;
 }
 
 export default function App() {
   const [images, setImages] = useState<Image[]>([]);  
-  const [loading, setLoading] = useState<boolean>(false);  
-  const [error, setError] = useState<string>('');  
+  const [loading, setLoading] = useState(false);  
+  const [error, setError] = useState('');  
   const [selectedImage, setSelectedImage] = useState<Image | null>(null);
-  const [query, setQuery] = useState<string>('');
-  const [page, setPage] = useState<number>(1);
+  const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
 
-  const handleSearch = (newQuery: string): void => {
+  const handleSearch = (newQuery: string) => {
     setLoading(true);
     setError('');
     setQuery(newQuery);
@@ -33,7 +34,7 @@ export default function App() {
     setLoading(false);  
   };
 
-  const fetchImages = async (query: string, page: number): Promise<void> => {
+  const fetchImages = async (query: string, page: number) => {
     setLoading(true);
     setError('');
     try {
@@ -41,8 +42,12 @@ export default function App() {
       if (!response.ok) throw new Error('Failed to fetch images');
       const data = await response.json();
       setImages(prevImages => page === 1 ? data.results : [...prevImages, ...data.results]);
-    } catch (err) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred');
+      }
     } finally {
       setLoading(false);
     }
@@ -54,15 +59,15 @@ export default function App() {
     }
   }, [query, page]);
 
-  const handleLoadMore = (): void => {
-    setPage(prevPage => prevPage + 1);
+  const handleLoadMore = () => {
+    setPage(page + 1);
   };
 
-  const openModal = (image: Image): void => {
+  const openModal = (image: Image) => {
     setSelectedImage(image);
   };
 
-  const closeModal = (): void => {
+  const closeModal = () => {
     setSelectedImage(null);
   };
 

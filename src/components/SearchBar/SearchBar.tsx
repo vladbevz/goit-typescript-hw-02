@@ -1,35 +1,30 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
-import { useEffect } from "react";
-import './SearchBar.css'
+import React, { useEffect } from "react";
+import './SearchBar.css';
 
+interface SearchFormValues {
+  search: string;
+}
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
 }
 
-
-interface FormData {
-  search: string;
-}
-
 export default function SearchBar({ onSearch }: SearchBarProps) {
-
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<SearchFormValues>();
 
-  
-  const onSubmit: SubmitHandler<FormData> = (data) => {
+  const onSubmit: SubmitHandler<SearchFormValues> = (data) => {
     onSearch(data.search);
   };
 
-  
   useEffect(() => {
-    if (errors.search) {
-      toast.error(errors.search.message || "Error occurred");
+    if (errors.search && errors.search.message) {
+      toast.error(errors.search.message);
     }
   }, [errors]);
 
